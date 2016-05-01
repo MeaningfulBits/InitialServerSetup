@@ -1,0 +1,7 @@
+This Ansible Playbook is intended to be used by Server Administrators for servers both public and private.
+
+The Playbook implements some common and not so common sense security features that should be present on every server.
+
+The target is Debian Servers but that is likely to expand in later development.
+
+Please email Questions, Comments, and Suggestions to TdotThomas[at]SpaceAgeMinds.com

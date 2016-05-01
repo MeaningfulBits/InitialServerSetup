@@ -1,0 +1,87 @@
+//=====================================================================================================================
+// Name        : InitialServerSetup
+// Author      : T. Thomas
+// Version     :
+// Compliation : 
+// Execution   :
+// Copyright   : Copyright 2016 T. Thomas. All rights reserved. (See LICENSE)
+// Description : Ansible Playbook for Inital Server Setup. (See README)
+//=====================================================================================================================
+---
+- hosts: ExampleDotCom
+  remote_user: root
+  vars:
+    Password: ''
+  tasks:
+
+# User Setup Start
+# ServerAdmin account creation
+    - name: ServerAdmin user account creation.
+      user: name=serveradmin comment=ServerAdmin groups=users,sudo shell=/bin/bash createhome=yes
+
+# Chage password
+    - name: Update ServerAdmin's password.
+      user: name=serveradmin password={{ Password }}
+    
+#Generate Random Password
+    - name: Generate Random Password.
+      shell: "date | sha512sum | cut -d ' ' -f 1"
+      register: RandomPassword
+
+# Change Root password to random string
+    - name: Change Root password to random string.
+      user: name=root password={{ RandomPassword.stdout }}
+
+# Disable remote Root access.
+    - name: Disallow root SSH access
+      lineinfile: dest=/etc/ssh/sshd_config
+                  regexp="^PermitRootLogin"
+                  line="PermitRootLogin no"
+                  state=present
+      notify: Restart ssh
+# User Setup End
+
+# Software Update and Install Start
+# Update all installed packages to the latest version
+    - name: Update all installed packages to the latest version.
+      apt:  upgrade=dist update_cache=yes
+
+# Installing Software
+    - name: Installing software.
+      apt: name={{ item }} state=latest
+      with_items:
+        - fail2ban
+        - monit
+
+    - name: Removing Software 
+      apt: name={{ item }} state=absent purge=yes
+      with_items:
+        - exim4*
+        - rpcbind*
+
+    - name: Copy Monit Config file.
+      copy: src=./files/etc/monit/monitrc dest=/etc/monit/monitrc owner=root group=sudo mode=0700
+      notify: Restart Monit
+
+    - name: Add cron job to update packages
+      cron: name="Update Installed Packages" minute="0" weekday="0" hour="12" job="apt-get update && apt-get -y upgrade"
+
+    - name: Autoremove unused packages
+      command: apt-get -y autoremove
+      register: autoremove_output
+      changed_when: "'The following packages will be REMOVED' in autoremove_output.stdout"
+
+# Package Update and Install End
+
+# Software Configure Start
+# Setting up IPTabbles
+# Software Configure End
+
+# Handlers Start
+  handlers:
+    - name: Restart Monit
+      shell: "monit reload"
+
+    - name: Restart ssh
+      service: name=ssh state=restarted
+# Handlers End
