@@ -1,11 +1,11 @@
-//=====================================================================================================================
+//============================================================================
+// Author      : T. Thomas (TdotThomas@SpaceAgeMinds.com)
+// Copyright   : Copyright 2016 T. Thomas. All rights reserved. (See LICENSE)
+// Description : Ansible Playbook for Initial Server Setup.
 // Name        : InitialServerSetup
-// Author      : T. Thomas
 // Version     :
 // Compliation : 
 // Execution   :
-// Copyright   : Copyright 2016 T. Thomas. All rights reserved. (See LICENSE)
-// Description : Ansible Playbook for Inital Server Setup. (See README)
 //=====================================================================================================================
 ---
 - hosts: ExampleDotCom

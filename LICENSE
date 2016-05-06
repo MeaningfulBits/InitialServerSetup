@@ -1,7 +1,10 @@
 //============================================================================
-// Name        : Initial Server Setup
-// Author      : T. Thomas
-// Copyright   : Copyright 2016 Tyler Thomas. All rights reserved.
+// Author      : T. Thomas (TdotThomas@SpaceAgeMinds.com)
+// Copyright   : Copyright 2016 T. Thomas. All rights reserved.
 // Description : Ansible Playbook for Initial Server Setup.
-// Website     : www.SpaceAgeMinds.com
 //============================================================================
+
+You may use this script free of charge providing you meet the following requirments.
+1. You understand that this script comes with no warrenty.
+2. You agree to keep lines 1 through 4 at the top of every file included in your download, with (See LICENSE) at the end of the copyright line.
+ 
