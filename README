@@ -2,6 +2,8 @@
 // Author      : T. Thomas (TdotThomas@SpaceAgeMinds.com)
 // Copyright   : Copyright 2016 T. Thomas. All rights reserved.
 // Description : Ansible Playbook for Initial Server Setup.
+// Depends On  : Ansible 1.7.2
+// How-To Run  : "sudo ansible-playbook -k -i hosts InitialServerSetup.yml"
 //============================================================================
 
 This Ansible Playbook is intended to be used by Server Administrators for servers both public and private.
