@@ -10,8 +10,10 @@
 ---
 - hosts: ExampleDotCom
   remote_user: root
-  vars:
-    Password: ''
+  vars_prompt:
+    - name: "Password"
+      prompt: "Enter Server Administrator's Password"
+      private: yes
   tasks:
 
 # User Setup Start
@@ -20,8 +22,12 @@
       user: name=serveradmin comment=ServerAdmin groups=users,sudo shell=/bin/bash createhome=yes
 
 # Chage password
+    - name: Encrypting password using mkpasswd (sha-512)
+      shell: echo {{ Password }} | mkpasswd -s --method=sha-512
+      register: Password_Crypted
+
     - name: Update ServerAdmin's password.
-      user: name=serveradmin password={{ Password }}
+      user: name=serveradmin password={{ Password_Crypted }}
     
 #Generate Random Password
     - name: Generate Random Password.
