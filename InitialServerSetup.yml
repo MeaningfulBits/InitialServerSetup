@@ -3,23 +3,25 @@
 // Copyright   : Copyright 2016 T. Thomas. All rights reserved. (See LICENSE)
 // Description : Ansible Playbook for Initial Server Setup.
 // Name        : InitialServerSetup
-// Version     :
-// Compliation : 
-// Execution   :
+// Version     : Alpha
+// Compliation : N/A
+// Execution   : 
 //=====================================================================================================================
 ---
 - hosts: ExampleDotCom
   remote_user: root
   vars_prompt:
+    - name: "User"
+      prompt: "Enter Server Administrator's Username"
     - name: "Password"
       prompt: "Enter Server Administrator's Password"
       private: yes
   tasks:
 
 # User Setup Start
-# ServerAdmin account creation
-    - name: ServerAdmin user account creation.
-      user: name=serveradmin comment=ServerAdmin groups=users,sudo shell=/bin/bash createhome=yes
+# Sudo user account creation
+    - name: Sudo user account creation.
+      user: name= {{ User }} comment="Sudo user created at inital server setup" groups=users,sudo shell=/bin/bash createhome=yes
 
 # Chage password
     - name: Encrypting password using mkpasswd (sha-512)
@@ -57,17 +59,12 @@
       apt: name={{ item }} state=latest
       with_items:
         - fail2ban
-        - monit
 
     - name: Removing Software 
       apt: name={{ item }} state=absent purge=yes
       with_items:
         - exim4*
         - rpcbind*
-
-    - name: Copy Monit Config file.
-      copy: src=./files/etc/monit/monitrc dest=/etc/monit/monitrc owner=root group=sudo mode=0700
-      notify: Restart Monit
 
     - name: Add cron job to update packages
       cron: name="Update Installed Packages" minute="0" weekday="0" hour="12" job="apt-get update && apt-get -y upgrade"
@@ -85,9 +82,6 @@
 
 # Handlers Start
   handlers:
-    - name: Restart Monit
-      shell: "monit reload"
-
     - name: Restart ssh
       service: name=ssh state=restarted
 # Handlers End
