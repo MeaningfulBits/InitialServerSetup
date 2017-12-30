@@ -1,0 +1,32 @@
+# Sets up Server Admin, Changes the root password, disabled remote login for root.
+---
+# User Setup Start
+# Sudo user account creation
+    - name: Sudo user account creation.
+      user: name= {{ User }} comment="Sudo user created at inital server setup" groups=users,sudo shell=/bin/bash createhome=yes
+
+# Chage password
+    - name: Encrypting password using mkpasswd (sha-512)
+      shell: echo {{ Password }} | mkpasswd -s --method=sha-512
+      register: Password_Crypted
+
+    - name: Update ServerAdmin's password.
+      user: name=serveradmin password={{ Password_Crypted }}
+    
+#Generate Random Password
+    - name: Generate Random Password.
+      shell: "date | sha512sum | cut -d ' ' -f 1"
+      register: RandomPassword
+
+# Change Root password to random string
+    - name: Change Root password to random string.
+      user: name=root password={{ RandomPassword.stdout }}
+
+# Disable remote Root access.
+    - name: Disallow root SSH access
+      lineinfile: dest=/etc/ssh/sshd_config
+                  regexp="^PermitRootLogin"
+                  line="PermitRootLogin no"
+                  state=present
+      notify: Restart ssh
+# User Setup End
