@@ -1,0 +1,7 @@
+# Remove Software that is not needed or causes a security problem.
+---
+- name: Removing Software.
+  apt: name={{ item }} state=absent purge=yes
+  with_items:
+    - exim4*
+    - rpcbind*

@@ -18,28 +18,20 @@
       private: yes
   tasks:
 
-    - name: User Setup
+    - name: User Setup Task
       include: tasks/UserSetup.yml
 
-# Software Update and Install Start
+# Software (Install, Update, and Configure)
 # Update all installed packages to the latest version
-    - name: Update all installed packages to the latest version.
-      apt:  upgrade=dist update_cache=yes
+    - name: Package Update Task
+      include: tasks/PackageUpdate.yml
 
 # Installing Software
     - name: Installing software.
-      apt: name={{ item }} state=latest
-      with_items:
-        - fail2ban
+      include: tasks/PackageInstall.yml
 
     - name: Removing Software 
-      apt: name={{ item }} state=absent purge=yes
-      with_items:
-        - exim4*
-        - rpcbind*
-
-    - name: Add cron job to update packages
-      cron: name="Update Installed Packages" minute="0" weekday="0" hour="12" job="apt-get update && apt-get -y upgrade"
+      include: tasks/PackageUninstall.yml
 
     - name: Autoremove unused packages
       command: apt-get -y autoremove

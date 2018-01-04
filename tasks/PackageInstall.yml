@@ -1,0 +1,6 @@
+# Installs all needed software using apt-get or other methods
+---
+- name: Install Packages via apt-get
+  apt: name{{ item }} state=latest
+  with_items:
+    - fail2ban

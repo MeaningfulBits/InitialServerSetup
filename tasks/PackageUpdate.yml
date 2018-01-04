@@ -1,0 +1,7 @@
+# Updated all installed packages.
+---
+- name: Update all installed packages to the latest version.
+  apt: upgrade=dist autoremove=yes purge=yes update_cache=yes cache_valid_time=3600
+
+- name: Add cron job to run apt-get everyday at noon.
+  cron: name="Updated Installed Packages" mintue="0" weekday="0" hour="12" job="apt-get update && apt-get -y upgrade"
