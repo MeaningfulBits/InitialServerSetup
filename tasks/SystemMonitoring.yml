@@ -1,0 +1,15 @@
+# Installs software to monitor this system and others. (Monit)
+#Package Install
+- name: Install System Monitor Software (Monit)
+  apt: name=monit status=latest
+
+#Package Configure
+- name: Copy Monit Config file.
+  copy: src=./file_system/etc/monit/monitrc dest=/etc/monit/monitrc owner=root group=sudo mode=0700
+  notify: Restart Monit
+
+# Handlers Start
+  handlers:
+    - name: Restart Monit
+      shell: "monit reload"
+# Handlers End
